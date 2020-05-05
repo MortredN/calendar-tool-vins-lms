@@ -1,24 +1,6 @@
 const https = require('https');
-const access_token = require('./access_token.json')
-
-
-let currentIndex = 0;
-const tokenCycle = () => {
-  if(currentIndex == access_token.length) {
-    currentIndex = 0;
-  }
-  return access_token[currentIndex++];
-}
-
-
-const httpsOpts = (_path, _method) => {
-  return {
-    hostname: 'lms.vinschool.edu.vn',
-    path: '/api/v1' + _path,
-    method: _method,
-    headers: {'Authorization': `Bearer ${tokenCycle()}`}
-  }
-}
+const httpsOpts = require('./httpsOpts');
+const fs = require('fs');
 
 
 const getChildAccs = (_accQueues, _childAccs) => {
@@ -68,7 +50,8 @@ const getCoursesFromChildAccs = (_accs, _courses) => {
   let accs = _accs, courses = _courses;
   if(accs.length != 0) {
     setTimeout(() => {
-      const req = https.request(httpsOpts(`/accounts/${accs[0].id}/courses`, 'GET'), res => {
+      // Ignore blueprint courses
+      const req = https.request(httpsOpts(`/accounts/${accs[0].id}/courses?blueprint=false`, 'GET'), res => {
         console.log(`getCourses from acc ID ${accs[0].id}: ${res.statusCode} - ${res.statusMessage}`);
 
         let dataQueue = "";
@@ -98,3 +81,16 @@ const getCoursesFromChildAccs = (_accs, _courses) => {
 
 // TESTING
 getChildAccs([{id: 1, name: 'VinSchool'}], [])
+
+// const req = https.request(httpsOpts(`/accounts/237/courses?blueprint=false`, 'GET'), res => {
+//   let dataQueue = "";
+//   res.on('data', (data) => {dataQueue += data});
+
+//   res.on('end', () => {
+//     const courseArrays = JSON.parse(dataQueue);
+//     console.log(courseArrays)
+//   });
+// });
+
+// req.on('error', err => {console.error(err)});
+// req.end();
