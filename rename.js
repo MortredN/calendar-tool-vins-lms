@@ -1,6 +1,74 @@
 const https = require('https');
 const httpsOpts = require('./httpsOpts');
-const fs = require('fs');
+const namingConv = require('./naming_conv.json');
+
+
+const getCodeInNamingConv = (_name, category, parentCode) => {
+  // Temporary uppercased name variable for looping
+  const name = _name.toUpperCase();
+
+  const arr = namingConv[category];
+  let code = parentCode;
+
+  // For Accounts: Loop for schools and grades (not for the classes in compulsory education system - grade 1 to 12)
+  if(category == "accounts")
+  {
+    for(let i = 0; i < arr.length; i++) {
+      if(code == parentCode)
+      {
+        if(name.includes(arr[i].name.toUpperCase())) {
+          code += arr[i].code;
+        }
+      }
+      else
+      {
+        break;
+      }
+    }
+    
+    // Provide code with class's name (compulsory education system - grade 1 to 12)
+    if(parentCode.includes("-TiH") || parentCode.includes("-THCS") || parentCode.includes("-THPT")) {
+      if(parentCode.includes("-K")) {
+        code += _name;
+      }
+    }
+
+    // If it's an account, it might contain courses, therefore a dash should be included
+    code += "-"
+  }
+
+  // For Subjects: Differentiate Alvin's classes to compulsory education's subjects
+  else if(category == "subjects") {
+
+    // Alvin classes
+    if(parentCode.includes('-MN'))
+    {
+      // Get the class name by taking the remaining substring after the last dash at the original course name
+      // E.g. "VSC-R1-Alvin1" ==> alvinClassName = "Alvin1"
+      let alvinClassName = _name.substring(_name.lastIndexOf("-") + 1);
+      code += alvinClassName;
+    }
+
+    // Compulsory education subjects
+    else
+    {
+      for(let i = 0; i < arr.length; i++) {
+        if(code == parentCode)
+        {
+          if(name.includes(arr[i].name.toUpperCase())) {
+            code += arr[i].code;
+          }
+        }
+        else
+        {
+          break;
+        }
+      }
+    }
+  }
+
+  return code;
+}
 
 
 const getChildAccs = (_accQueues, _childAccs) => {
@@ -18,17 +86,14 @@ const getChildAccs = (_accQueues, _childAccs) => {
           if(accArrays.length != 0)
           {
             accArrays.forEach((acc) => {
-              accQueues.push({id: acc.id, name: acc.name});
+              accQueues.push({id: acc.id, name: acc.name,
+                code: getCodeInNamingConv(acc.name, 'accounts', accQueues[0].code)});
             });
-            // accQueues = accQueues.concat(accArrays);
           }
-          else
-          {
-            childAccs.push(accQueues[0]);
-          }
+
+          childAccs.push(accQueues[0]);
+          console.log(accQueues[0]);
           accQueues.shift();
-          
-          console.log(childAccs);
 
           getChildAccs(accQueues, childAccs);
         });
@@ -60,14 +125,20 @@ const getCoursesFromChildAccs = (_accs, _courses) => {
         res.on('end', () => {
           const courseArrays = JSON.parse(dataQueue);
           courseArrays.forEach((co) => {
-             courses.push({id: co.id, course_code: co.course_code, name: co.name});
+            
+            // Only push in the array if the course belongs to a specific sub-account
+            // Does not count for the parent accounts of that sub-account
+            if(co.account_id == accs[0].id)
+            {
+              courses.push({id: co.id, name: co.name,
+                code: getCodeInNamingConv(co.name, 'subjects', accs[0].code)});
+              console.log({id: co.id, name: co.name,
+                code: getCodeInNamingConv(co.name, 'subjects', accs[0].code)});
+            }
           });
-          // courses = courses.concat(courseArrays);
 
           accs.shift();
           
-          console.log(courses);
-
           getCoursesFromChildAccs(accs, courses);
         });
       });
@@ -80,9 +151,9 @@ const getCoursesFromChildAccs = (_accs, _courses) => {
 
 
 // TESTING
-getChildAccs([{id: 1, name: 'VinSchool'}], [])
+getChildAccs([{id: 964, name: 'Rename', code: getCodeInNamingConv('Rename', 'accounts', '')}], [])
 
-// const req = https.request(httpsOpts(`/accounts/237/courses?blueprint=false`, 'GET'), res => {
+// const req = https.requ est(httpsOpts(`/accounts/964/courses?blueprint=false`, 'GET'), res => {
 //   let dataQueue = "";
 //   res.on('data', (data) => {dataQueue += data});
 
