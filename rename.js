@@ -150,18 +150,26 @@ const getCoursesFromChildAccs = (_accs, _courses) => {
 }
 
 
+const updateCourseCodes = (_courses) => {
+  
+}
+
+
 // TESTING
-getChildAccs([{id: 964, name: 'Rename', code: getCodeInNamingConv('Rename', 'accounts', '')}], [])
+// getChildAccs([{id: 964, name: 'Rename', code: getCodeInNamingConv('Rename', 'accounts', '')}], [])
 
-// const req = https.requ est(httpsOpts(`/accounts/964/courses?blueprint=false`, 'GET'), res => {
-//   let dataQueue = "";
-//   res.on('data', (data) => {dataQueue += data});
+const data = JSON.stringify({"course_code": 'TV2A03'});
 
-//   res.on('end', () => {
-//     const courseArrays = JSON.parse(dataQueue);
-//     console.log(courseArrays)
-//   });
-// });
+const req = https.request(httpsOpts(`/courses/16557`, 'PUT', data.length), res => {
+  console.log(`PUT in Course 16657: ${res.statusCode} - ${res.statusMessage}`);
+  let dataQueue = "";
+  res.on('data', (data) => {dataQueue += data});
 
-// req.on('error', err => {console.error(err)});
-// req.end();
+  res.on('end', () => {
+    console.log(JSON.parse(dataQueue));
+  });
+});
+
+req.on('error', err => {console.error(err)});
+req.write(data)
+req.end();
