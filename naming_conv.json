@@ -101,6 +101,7 @@
         {"name": "Ngữ văn", "code": "NV"},
         {"name": "Sinh học", "code": "SH"},
         {"name": "Sinhhoc", "code": "SH"},
-        {"name": "Vật lý", "code": "VL"}
+        {"name": "Vật lý", "code": "VL"},
+        {"name": "SHCN", "code": "SHCN"}
     ]
 }
