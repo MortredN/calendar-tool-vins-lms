@@ -158,7 +158,7 @@ const updateCourseCodes = (_courses) => {
 // TESTING
 // getChildAccs([{id: 964, name: 'Rename', code: getCodeInNamingConv('Rename', 'accounts', '')}], [])
 
-const data = JSON.stringify({"course_code": 'TV2A03'});
+const data = JSON.stringify({"course": {"course_code": 'TV2A03'}});
 
 const req = https.request(httpsOpts(`/courses/16557`, 'PUT', data.length), res => {
   console.log(`PUT in Course 16657: ${res.statusCode} - ${res.statusMessage}`);
