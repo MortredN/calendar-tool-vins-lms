@@ -1,6 +1,7 @@
 const https = require('https');
 const httpsOpts = require('./httpsOpts');
-const codeFromNamingConv = require('./codeFromNamingConv');
+const { codeFromNamingConv } = require('./codeFromNamingConv');
+const { getAccount } = require('./getSingle');
 
 
 const getChildAccs = (_accQueues, _childAccs) => {
@@ -33,7 +34,7 @@ const getChildAccs = (_accQueues, _childAccs) => {
       
       req.on('error', err => {console.error(err)});
       req.end();
-    }, 10); // BCS (or maximum) 100 API calls / sec
+    }, 10); // Maximum 100 API calls / sec
   }
   else {
     setTimeout(() => {
@@ -77,7 +78,7 @@ const getCoursesFromChildAccs = (_accs, _courses) => {
       
       req.on('error', err => {console.error(err)});
       req.end();
-    }, 10); // BCS (or maximum) 100 API calls / sec
+    }, 10); // Maximum 100 API calls / sec
   }
   else
   {
@@ -90,18 +91,25 @@ const getCoursesFromChildAccs = (_accs, _courses) => {
 
 const updateCoursesCodes = (_courses) => {
   let courses = _courses;
-  if(courses.length != 0) {
+  if(courses.length != 0)
+  {
     setTimeout(() => {
       const data = JSON.stringify({"course": {"course_code": courses[0].code}});
 
       const req = https.request(httpsOpts(`/courses/${courses[0].id}`, 'PUT', data.length), res => {
-        console.log(`PUT - updateCoursesCodes for ${courses[0].id} "${courses[0].name} - ${res.statusCode} - ${res.statusMessage}"`);
+        console.log(`PUT - updateCoursesCodes for ${courses[0].id} "${courses[0].name}": ${res.statusCode} - ${res.statusMessage}`);
 
         let dataQueue = "";
         res.on('data', (data) => {dataQueue += data});
 
-        res.on('end', () => {
-          console.log(`Code changed for ${courses[0].id}? ${JSON.parse(dataQueue).course_code == courses[0].code}`);
+        res.on('end', ()  => {
+          const updateSuccessful = JSON.parse(dataQueue).course_code == courses[0].code;
+          console.log(`Code changed for ${courses[0].id}? ${updateSuccessful}`);
+
+          if(!updateSuccessful)
+          {
+            courses.unshift(course[0].id); // Put the error courses back to the queue and re-run the update process
+          }
           
           courses.shift();
 
@@ -112,26 +120,58 @@ const updateCoursesCodes = (_courses) => {
       req.on('error', err => {console.error(err)});
       req.write(data);
       req.end();
-    }, 10); // BCS (or maximum) 100 API calls / sec
+    }, 10); // Maximum 100 API calls / sec
+  }
+  else
+  {
+    console.log("Finished updating!");
   }
 }
 
 
+const findParents = (inputId, currentChildId, _parents) => {
+  let parents = _parents;
+  if(parents == undefined) // First recursion
+  {
+    parents = [];
+    currentChildId = inputId;
+  }
+
+  getAccount(currentChildId).then((acc) => {
+    parents.unshift(acc);
+
+    // Recurse until reached the root account
+    // The root account's root account ID will be "null"
+    if(acc.root_account_id != null)
+    {
+      findParents(inputId, acc.parent_account_id, parents);
+    }
+    else
+    {
+      let code = '', nameOfInputId = '';
+      for(let i = 0; i < parents.length; i++)
+      {
+        code = codeFromNamingConv(parents[i].name, 'accounts', code);
+        if(i == parents.length - 1)
+        {
+          nameOfInputId = parents[i].name;
+        }
+      }
+
+      console.log(`Finished getting parents of input ID: ${inputId}. Start main process...`);
+
+      getChildAccs([{id: inputId, name: nameOfInputId, code: code}], []);
+    }
+  });
+}
+
+
+
 /* TESTING ZONE */
-getChildAccs([{id: 964, name: 'Rename', code: codeFromNamingConv('Rename', 'accounts', '')}], [])
 
-// const data = JSON.stringify({"course": {"course_code": 'TV2A03'}});
 
-// const req = https.request(httpsOpts(`/courses/16557`, 'PUT', data.length), res => {
-//   console.log(`PUT in Course 16657: ${res.statusCode} - ${res.statusMessage}`);
-//   let dataQueue = "";
-//   res.on('data', (data) => {dataQueue += data});
+const inputParentIdForUpdate = (inputId) => {
+  findParents(inputId);
+}
 
-//   res.on('end', () => {
-//     console.log(JSON.parse(dataQueue));
-//   });
-// });
-
-// req.on('error', err => {console.error(err)});
-// req.write(data)
-// req.end();
+// inputParentIdForUpdate(965);
