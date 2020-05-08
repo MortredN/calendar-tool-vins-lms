@@ -37,6 +37,7 @@ const getChildAccs = (_accQueues, _childAccs) => {
     }, 10); // Maximum 100 API calls / sec
   }
   else {
+    console.log("Ready to get courses from all accounts in 5 seconds...");
     setTimeout(() => {
       getCoursesFromChildAccs(childAccs, []);
     }, 5000); // Wait 5 secs before getting courses
@@ -82,9 +83,10 @@ const getCoursesFromChildAccs = (_accs, _courses) => {
   }
   else
   {
+    console.log("Ready to update courses codes in 5 seconds...");
     setTimeout(() => {
       updateCoursesCodes(courses);
-    }, 5000); // Wait 5 secs before getting courses
+    }, 5000); // Wait 5 secs before updating courses
   }
 }
 
@@ -158,20 +160,19 @@ const findParents = (inputId, currentChildId, _parents) => {
         }
       }
 
-      console.log(`Finished getting parents of input ID: ${inputId}. Start main process...`);
+      console.log(`Finished getting parents of input ID: ${inputId}.`);
+      console.log("Ready to get all sub-accounts from the input account in 5 seconds...");
 
-      getChildAccs([{id: inputId, name: nameOfInputId, code: code}], []);
+      setTimeout(() => {
+        getChildAccs([{id: inputId, name: nameOfInputId, code: code}], []);
+      }, 5000); // Wait 5 secs before getting sub-accounts
     }
   });
 }
 
 
-
-/* TESTING ZONE */
-
-
-const inputParentIdForUpdate = (inputId) => {
-  findParents(inputId);
+module.exports = {
+  inputParentIdForUpdate: (inputId) => {
+    findParents(inputId);
+  }
 }
-
-// inputParentIdForUpdate(965);
