@@ -1,2 +1,5 @@
 # Access tokens for Canvas API
 access_token.json
+
+# Ignore node_modules
+node_modules
