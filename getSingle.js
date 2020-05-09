@@ -4,7 +4,7 @@ const httpsOpts = require('./httpsOpts');
 
 module.exports = {
   
-  getAccount: (id) => {
+  getAccount: (timeoutSpeed, id) => {
     return new Promise((resolve) => {
       setTimeout(() => {
         const req = https.request(httpsOpts(`/accounts/${id}`, 'GET'), res => {
@@ -20,7 +20,7 @@ module.exports = {
     
         req.on('error', err => {console.error(err)});
         req.end();
-      }, 500); // Maximum 100 API calls / sec
+      }, timeoutSpeed);
     });
   }
   

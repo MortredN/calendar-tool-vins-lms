@@ -4,7 +4,47 @@ const { codeFromNamingConv } = require('./codeFromNamingConv');
 const { getAccount } = require('./getSingle');
 
 
-const getChildAccs = (_accQueues, _childAccs) => {
+const findParents = (timeoutSpeed, inputId, currentChildId, _parents) => {
+  let parents = _parents;
+  if(parents == undefined) // First recursion
+  {
+    parents = [];
+    currentChildId = inputId;
+  }
+
+  getAccount(timeoutSpeed, currentChildId).then((acc) => {
+    parents.unshift(acc);
+
+    // Recurse until reached the root account
+    // The root account's root account ID will be "null"
+    if(acc.root_account_id != null)
+    {
+      findParents(timeoutSpeed, inputId, acc.parent_account_id, parents);
+    }
+    else
+    {
+      let code = '', nameOfInputId = '';
+      for(let i = 0; i < parents.length; i++)
+      {
+        code = codeFromNamingConv(parents[i].name, 'accounts', code);
+        if(i == parents.length - 1)
+        {
+          nameOfInputId = parents[i].name;
+        }
+      }
+
+      console.log(`Finished getting parents of input ID: ${inputId}.`);
+      console.log("Ready to get all sub-accounts from the input account in 5 seconds...");
+
+      setTimeout(() => {
+        getChildAccs(timeoutSpeed, [{id: inputId, name: nameOfInputId, code: code}], []);
+      }, 5000); // Wait 5 secs before getting sub-accounts
+    }
+  });
+}
+
+
+const getChildAccs = (timeoutSpeed, _accQueues, _childAccs) => {
   let accQueues = _accQueues, childAccs = _childAccs
   if(accQueues.length != 0) {
     setTimeout(() => {
@@ -28,24 +68,24 @@ const getChildAccs = (_accQueues, _childAccs) => {
           console.log(accQueues[0]);
           accQueues.shift();
 
-          getChildAccs(accQueues, childAccs);
+          getChildAccs(timeoutSpeed, accQueues, childAccs);
         });
       });
       
       req.on('error', err => {console.error(err)});
       req.end();
-    }, 10); // Maximum 100 API calls / sec
+    }, timeoutSpeed);
   }
   else {
     console.log("Ready to get courses from all accounts in 5 seconds...");
     setTimeout(() => {
-      getCoursesFromChildAccs(childAccs, []);
+      getCoursesFromChildAccs(timeoutSpeed, childAccs, []);
     }, 5000); // Wait 5 secs before getting courses
   }
 }
 
 
-const getCoursesFromChildAccs = (_accs, _courses) => {
+const getCoursesFromChildAccs = (timeoutSpeed, _accs, _courses) => {
   let accs = _accs, courses = _courses;
   if(accs.length != 0) {
     setTimeout(() => {
@@ -73,25 +113,25 @@ const getCoursesFromChildAccs = (_accs, _courses) => {
 
           accs.shift();
           
-          getCoursesFromChildAccs(accs, courses);
+          getCoursesFromChildAccs(timeoutSpeed, accs, courses);
         });
       });
       
       req.on('error', err => {console.error(err)});
       req.end();
-    }, 10); // Maximum 100 API calls / sec
+    }, timeoutSpeed);
   }
   else
   {
     console.log("Ready to update courses codes in 5 seconds...");
     setTimeout(() => {
-      updateCoursesCodes(courses);
+      updateCoursesCodes(timeoutSpeed, courses);
     }, 5000); // Wait 5 secs before updating courses
   }
 }
 
 
-const updateCoursesCodes = (_courses) => {
+const updateCoursesCodes = (timeoutSpeed, _courses) => {
   let courses = _courses;
   if(courses.length != 0)
   {
@@ -115,14 +155,14 @@ const updateCoursesCodes = (_courses) => {
           
           courses.shift();
 
-          updateCoursesCodes(courses);
+          updateCoursesCodes(timeoutSpeed, courses);
         });
       });
 
       req.on('error', err => {console.error(err)});
       req.write(data);
       req.end();
-    }, 10); // Maximum 100 API calls / sec
+    }, timeoutSpeed);
   }
   else
   {
@@ -131,48 +171,8 @@ const updateCoursesCodes = (_courses) => {
 }
 
 
-const findParents = (inputId, currentChildId, _parents) => {
-  let parents = _parents;
-  if(parents == undefined) // First recursion
-  {
-    parents = [];
-    currentChildId = inputId;
-  }
-
-  getAccount(currentChildId).then((acc) => {
-    parents.unshift(acc);
-
-    // Recurse until reached the root account
-    // The root account's root account ID will be "null"
-    if(acc.root_account_id != null)
-    {
-      findParents(inputId, acc.parent_account_id, parents);
-    }
-    else
-    {
-      let code = '', nameOfInputId = '';
-      for(let i = 0; i < parents.length; i++)
-      {
-        code = codeFromNamingConv(parents[i].name, 'accounts', code);
-        if(i == parents.length - 1)
-        {
-          nameOfInputId = parents[i].name;
-        }
-      }
-
-      console.log(`Finished getting parents of input ID: ${inputId}.`);
-      console.log("Ready to get all sub-accounts from the input account in 5 seconds...");
-
-      setTimeout(() => {
-        getChildAccs([{id: inputId, name: nameOfInputId, code: code}], []);
-      }, 5000); // Wait 5 secs before getting sub-accounts
-    }
-  });
-}
-
-
 module.exports = {
-  inputParentIdForUpdate: (inputId) => {
-    findParents(inputId);
+  inputParentIdForUpdate: (timeoutSpeed, inputId) => {
+    findParents(timeoutSpeed, inputId);
   }
 }
