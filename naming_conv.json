@@ -62,46 +62,125 @@
         {"name": "TiH The Harmony", "code": "TiH-HAR"},
         {"name": "TiH Thăng Long", "code": "TiH-TL"}
     ],
+    
     "subjects": [
         {"name": "Âm nhạc", "code": "AN"},
-        {"name": "Công dân toàn cầu", "code": "CDTC"},
-        {"name": "GCED", "code": "GCED"},
-        {"name": "Giáo dục thể chất", "code": "GDTC"},
-        {"name": "Thể chất", "code": "GDTC"},
-        {"name": "Thể dục", "code": "GDTC"},
-        {"name": "Mỹ thuật", "code": "MT"},
-        {"name": "Việt Nam học", "code": "VNH"},
-        {"name": "Giáo dục phẩm chất", "code": "GDPC"},
-        {"name": "CLISE", "code": "CLISE"},
-        {"name": "Khoa học tự nhiên", "code": "KHTN"},
-        {"name": "Khoa học", "code": "KHTN"},
-        {"name": "Tiếng Anh nước ngoài", "code": "TANN"},
-        {"name": "Tiếng Anh Việt Nam", "code": "TAVN"},
-        {"name": "Toán", "code": "TO"},
-        {"name": "Tiếng Việt", "code": "TV"},
+        {"name": "Am nhac", "code": "AN"},
+
         {"name": "CIE ESL", "code": "CIEESL"},
+        {"name": "CIEESL", "code": "CIEESL"},
         {"name": "English", "code": "CIEESL"},
+
         {"name": "CIE Maths", "code": "CIEMAT"},
-        {"name": "Maths", "code": "CIEMAT"},
+        {"name": "CIEMath", "code": "CIEMAT"},
         {"name": "Math", "code": "CIEMAT"},
+        {"name": "Maths", "code": "CIEMAT"},
+
         {"name": "CIE Science", "code": "CIESCI"},
         {"name": "Science", "code": "CIESCI"},
-        {"name": "Global Perspectives", "code": "GP"},
-        {"name": "GP", "code": "GP"},
-        {"name": "ICT", "code": "ICT"},
-        {"name": "Tin học", "code": "TH"},
-        {"name": "CNTT", "code": "TH"},
-        {"name": "Lịch sử & Địa lý", "code": "LSDL"},
-        {"name": "Lịch sử - Địa lý", "code": "LSDL"},
-        {"name": "GDCD", "code": "GDCD"},
+        {"name": "CLISE", "code": "CLISE"},
+
+        {"name": "Công dân toàn cầu", "code": "CDTC"},
+        {"name": "Cong dan toan cau", "code": "CDTC"},
+        {"name": "CDTC", "code": "GDTC"},
+
         {"name": "Công nghệ", "code": "CN"},
+        {"name": "Cong nghe", "code": "CN"},
+        {"name": "Congnghe", "code": "CN"},
+
         {"name": "Địa lý", "code": "DL"},
+        {"name": "Dia ly", "code": "DL"},
+        {"name": "Dialy", "code": "DL"},
+
+        {"name": "GCED", "code": "GCED"},
+
+        {"name": "GDCD", "code": "GDCD"},
+
+        {"name": "GP", "code": "GP"},
+        {"name": "Global Perspectives", "code": "GP"},
+
+        {"name": "Giáo dục phẩm chất", "code": "GDPC"},
+        {"name": "Giao duc pham chat", "code": "GDPC"},
+        {"name": "GDPC", "code": "GDPC"},
+
+        {"name": "Giáo dục thể chất", "code": "GDTC"},
+        {"name": "Giao duc the chat", "code": "GDTC"},
+        {"name": "GDTC", "code": "GDTC"},
+        {"name": "Thể chất", "code": "GDTC"},
+        {"name": "The chat", "code": "GDTC"},
+        {"name": "Thechat", "code": "GDTC"},
+        {"name": "Thể dục", "code": "GDTC"},
+        {"name": "The duc", "code": "GDTC"},
+        {"name": "Theduc", "code": "GDTC"},
+
         {"name": "Hóa học", "code": "HO"},
+        {"name": "Hoa hoc", "code": "HO"},
+        {"name": "Hoahoc", "code": "HO"},
+
+        {"name": "ICT", "code": "ICT"},
+
+        {"name": "Khoa học tự nhiên", "code": "KHTN"},
+        {"name": "Khoa hoc tu nhien", "code": "KHTN"},
+        {"name": "KHTN", "code": "KHTN"},
+        {"name": "Khoa học", "code": "KHTN"},
+        {"name": "Khoa hoc", "code": "KHTN"},
+        {"name": "Khoahoc", "code": "KHTN"},
+
+        {"name": "Lịch sử & Địa lý", "code": "LSDL"},
+        {"name": "Lich su & Dia ly", "code": "LSDL"},
+        {"name": "Lịch sử - Địa lý", "code": "LSDL"},
+        {"name": "Lich su - Dia ly", "code": "LSDL"},
+        {"name": "LS&DL", "code": "LSDL"},
+        {"name": "LS-DL", "code": "LSDL"},
+        {"name": "LSDL", "code": "LSDL"},
+
         {"name": "Lịch sử", "code": "LS"},
+        {"name": "Lich su", "code": "LS"},
+        {"name": "Lichsu", "code": "LS"},
+
+        {"name": "Mỹ thuật", "code": "MT"},
+        {"name": "My thuat", "code": "MT"},
+        {"name": "Mythuat", "code": "MT"},
+
         {"name": "Ngữ văn", "code": "NV"},
+        {"name": "Ngu van", "code": "NV"},
+        {"name": "Nguvan", "code": "NV"},
+
+        {"name": "SHCN", "code": "SHCN"},
+
         {"name": "Sinh học", "code": "SH"},
+        {"name": "Sinh hoc", "code": "SH"},
         {"name": "Sinhhoc", "code": "SH"},
+
+        {"name": "Tin học", "code": "TH"},
+        {"name": "Tin hoc", "code": "TH"},
+        {"name": "Tinhoc", "code": "TH"},
+
+        {"name": "Công nghệ thông tin", "code": "TH"},
+        {"name": "Cong nghe thong tin", "code": "TH"},
+        {"name": "CNTT", "code": "TH"},
+
+        {"name": "Tiếng Anh Việt Nam", "code": "TAVN"},
+        {"name": "Tieng Anh Viet Nam", "code": "TAVN"},
+        {"name": "TAVN", "code": "TAVN"},
+        
+        {"name": "Tiếng Anh nước ngoài", "code": "TANN"},
+        {"name": "Tieng Anh nuoc ngoai", "code": "TANN"},
+        {"name": "TANN", "code": "TANN"},
+
+        {"name": "Tiếng Việt", "code": "TV"},
+        {"name": "Tieng Viet", "code": "TV"},
+        {"name": "Tiengviet", "code": "TV"},
+
+        {"name": "Toán", "code": "TO"},
+        {"name": "Toan", "code": "TO"},
+
+        {"name": "Việt Nam học", "code": "VNH"},
+        {"name": "Viet Nam hoc", "code": "VNH"},
+        {"name": "VNH", "code": "VNH"},
+
         {"name": "Vật lý", "code": "VL"},
-        {"name": "SHCN", "code": "SHCN"}
+        {"name": "Vat ly", "code": "VL"},
+        {"name": "Vatly", "code": "VL"}
     ]
 }
